@@ -269,7 +269,7 @@ def pregunta_09():
     for letra in letras:
         resultados[letra] += 1
        
-    return list(resultados.items())
+    return resultados
 
 
 def pregunta_10():
