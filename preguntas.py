@@ -11,7 +11,15 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 
 """
+from csv import reader
+from math import inf
 
+def leer_datos(rutaArchivo):
+    with open(rutaArchivo, 'r') as archivo:
+        lineasArchivo = [[linea[0], int(linea[1]), {'año':linea[2][0:4],'mes':linea[2][5:7], 'dia':linea[2][8:] }, linea[3].split(','), {elemento[0:3]: int(elemento[4:]) for elemento in linea[4].split(',')} ] for linea in reader(archivo, delimiter='\t')]
+    return lineasArchivo
+
+datos = leer_datos('data.csv')
 
 def pregunta_01():
     """
@@ -21,7 +29,8 @@ def pregunta_01():
     214
 
     """
-    return
+    suma = sum([linea[1] for linea in datos])
+    return suma
 
 
 def pregunta_02():
@@ -39,7 +48,12 @@ def pregunta_02():
     ]
 
     """
-    return
+    letras = sorted([linea[0] for linea in datos])
+    conjunto_letras = {letra: 0 for letra in sorted(set(letras))}
+    for letra in letras:
+        conjunto_letras[letra] +=1
+    
+    return list(conjunto_letras.items())
 
 
 def pregunta_03():
@@ -57,7 +71,13 @@ def pregunta_03():
     ]
 
     """
-    return
+    tuplas = [(linea[0], linea[1]) for linea in datos]
+    letras = sorted(set([linea[0] for linea in datos]))
+    conjunto_letras = {letra: 0 for letra in letras}
+    for letra, número in tuplas:
+        conjunto_letras[letra] += número
+    
+    return list(conjunto_letras.items())
 
 
 def pregunta_04():
@@ -82,7 +102,13 @@ def pregunta_04():
     ]
 
     """
-    return
+    meses = [linea[2]['mes'] for linea in datos]
+    conjunto_meses = sorted(set(meses))
+    conteo_meses = {mes: 0 for mes in conjunto_meses}
+    for mes in meses:
+        conteo_meses[mes] += 1
+    
+    return list(conteo_meses.items())
 
 
 def pregunta_05():
@@ -100,7 +126,18 @@ def pregunta_05():
     ]
 
     """
-    return
+    tuplas = [(linea[0], linea[1]) for linea in datos]
+    letras = [tupla[0] for tupla in tuplas]
+    conjunto_letras = sorted(set(letras))
+    menor_letras = {letra: inf for letra in conjunto_letras}
+    mayor_letras = {letra: 0 for letra in conjunto_letras}
+    for letra, valor in tuplas:
+        mayor_letras[letra] = mayor_letras[letra] if valor <= mayor_letras[letra] else valor
+        menor_letras[letra] = menor_letras[letra] if valor >= menor_letras[letra] else valor
+
+    resultados = [(letra, mayor_letras[letra], menor_letras[letra]) for letra in conjunto_letras]
+       
+    return resultados
 
 
 def pregunta_06():
@@ -125,7 +162,21 @@ def pregunta_06():
     ]
 
     """
-    return
+    letras = []
+    valores = []
+    for linea in datos:
+        letras += list(linea[4].keys())
+        valores += list(linea[4].items())
+    conjunto_letras = sorted(set(letras))
+    menor_letras = {letra: inf for letra in conjunto_letras}
+    mayor_letras = {letra: 0 for letra in conjunto_letras}
+    for letra, valor in valores:
+        mayor_letras[letra] = mayor_letras[letra] if valor <= mayor_letras[letra] else valor
+        menor_letras[letra] = menor_letras[letra] if valor >= menor_letras[letra] else valor
+
+    resultados = [(letra, menor_letras[letra], mayor_letras[letra]) for letra in conjunto_letras]
+       
+    return resultados
 
 
 def pregunta_07():
@@ -149,7 +200,13 @@ def pregunta_07():
     ]
 
     """
-    return
+    tuplas = [(linea[0], linea[1]) for linea in datos]
+    números = sorted(set([linea[1] for linea in datos]))
+    diccionario_números = {número: [] for número in números}
+    for letra, número in tuplas:
+        diccionario_números[número] += [letra]
+    
+    return list(diccionario_números.items())
 
 
 def pregunta_08():
@@ -174,7 +231,14 @@ def pregunta_08():
     ]
 
     """
-    return
+    tuplas = [(linea[0], linea[1]) for linea in datos]
+    números = sorted(set([linea[1] for linea in datos]))
+    diccionario_números = {número: [] for número in números}
+    for letra, número in tuplas:
+        diccionario_números[número] += [letra]
+    diccionario_números = {número: sorted(set(lista)) for número, lista in diccionario_números.items()}
+        
+    return list(diccionario_números.items())
 
 
 def pregunta_09():
@@ -197,7 +261,15 @@ def pregunta_09():
     }
 
     """
-    return
+    letras = []
+    for linea in datos:
+        letras += list(linea[4].keys())
+    conjunto_letras = sorted(set(letras))
+    resultados = {letra: 0 for letra in conjunto_letras}
+    for letra in letras:
+        resultados[letra] += 1
+       
+    return resultados
 
 
 def pregunta_10():
@@ -218,7 +290,7 @@ def pregunta_10():
 
 
     """
-    return
+    return [(linea[0], len(linea[3]), len(linea[4])) for linea in datos]
 
 
 def pregunta_11():
@@ -239,7 +311,17 @@ def pregunta_11():
 
 
     """
-    return
+    letras = []
+    valores = []
+    for linea in datos:
+        letras += linea[3]
+        valores += [(letra, linea[1]) for letra in linea[3]]
+    conjunto_letras = sorted(set(letras))
+    diccionario_letras = {letra: 0 for letra in conjunto_letras}
+    for letra, valor in valores:
+        diccionario_letras[letra] += valor
+
+    return diccionario_letras
 
 
 def pregunta_12():
@@ -257,4 +339,10 @@ def pregunta_12():
     }
 
     """
-    return
+    tuplas = [(linea[0], sum(linea[4].values())) for linea in datos]
+    letras = sorted(set([linea[0] for linea in datos]))
+    conjunto_letras = {letra: 0 for letra in letras}
+    for letra, número in tuplas:
+        conjunto_letras[letra] += número
+    
+    return conjunto_letras
